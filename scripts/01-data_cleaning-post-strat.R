@@ -22,22 +22,21 @@ raw_data <- labelled::to_factor(raw_data)
 # this depending on your interests)
 names(raw_data)
 
-reduced_data <- 
+reduced_data_p <- 
   raw_data %>% 
-  select(region,
-         stateicp,
+  select(age,
          sex, 
-         age, 
-         race, 
-         hispan,
-         marst, 
-         bpl,
-         citizen,
          educd,
-         labforce,
-         inctot)
+         stateicp,
+         inctot,
+         race,
+         perwt,
+         citizen,
+         empstat,
+         labforce)
 rm(raw_data)
-         
+
+reduced_data_p<-na.omit(reduced_data_p)
 
 #### What's next? ####
 
