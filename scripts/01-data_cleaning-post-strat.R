@@ -13,7 +13,7 @@
 library(haven)
 library(tidyverse)
 # Read in the raw data. 
-raw_data <- read_dta("inputs/data/usa_00003.dta"
+raw_data <- read_dta("inputs/data/usa_00001.dta"
                      )
 # Add the labels
 raw_data <- labelled::to_factor(raw_data)
