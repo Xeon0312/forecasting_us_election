@@ -34,11 +34,10 @@ reduced_data_s <-
          consider_trump,
          not_trump)
 
-rm(raw_data_s)
-
+# Change the age type
 reduced_data_s$age<-as.numeric(reduced_data_s$age)
 
-reduced_data_s<-na.omit(reduced_data_s)
+# Remove people who didn't do the survey proply.
 reduced_data_s<-reduced_data_s %>% 
   filter(registration=="Registered"&
         vote_intention=="Yes, I will vote"&
@@ -48,11 +47,27 @@ reduced_data_s<-reduced_data_s %>%
          (vote_2020=="Donald Trump"|vote_2020=="Joe Biden")
 )
 
-# 4781/5479 after drop NA
+# Droping NA.
+reduced_data_s<-na.omit(reduced_data_s)
+
+# Clean memory
+rm(raw_data_s)
+
+# Making some age-groups
+reduced_data_s<-reduced_data_s %>% 
+  mutate(agegroup = case_when(age <=20 ~ '20 or less',
+                              age >20  & age <= 30 ~ '21 to 30',
+                              age >30  & age <= 40 ~ '31 to 40',
+                              age >40  & age <= 50 ~ '41 to 50',
+                              age >50  & age <= 60 ~ '51 to 60',
+                              age >60  & age <= 70 ~ '61 to 70',
+                              age >70  & age <= 80 ~ '71 to 80',
+                              age >80 ~ 'above 80'
+  )) 
+
 
 #### What else???? ####
-# Maybe make some age-groups?
+
 # Maybe check the values?
 # Is vote a binary? If not, what are you going to do?
 
-reduced_data_s

@@ -34,12 +34,34 @@ reduced_data_p <-
          citizen,
          empstat,
          labforce)
-rm(raw_data)
 
+# Cleaning data
+# Remove people who can't vote
+reduced_data_p$age<-as.numeric(reduced_data_p$age)
+reduced_data_p<-reduced_data_p %>% filter(age>=18 & 
+                                          (citizen=="naturalized citizen"|citizen=="born abroad of american parents")
+                                          )
+# Adjust the NA
+reduced_data_p$inctot<-ifelse(reduced_data_p$inctot==9999999,
+                                      NaN,reduced_data_p$inctot)
+# Drop NA
 reduced_data_p<-na.omit(reduced_data_p)
+
+# Clean memory
+rm(raw_data)
 
 #### What's next? ####
 
-
+# Making some age-groups
+reduced_data_p<-reduced_data_p %>% 
+  mutate(agegroup = case_when(age <=20 ~ '20 or less',
+                              age >20  & age <= 30 ~ '21 to 30',
+                              age >30  & age <= 40 ~ '31 to 40',
+                              age >40  & age <= 50 ~ '41 to 50',
+                              age >50  & age <= 60 ~ '51 to 60',
+                              age >60  & age <= 70 ~ '61 to 70',
+                              age >70  & age <= 80 ~ '71 to 80',
+                              age >80 ~ 'above 80'
+  )) 
 
          
