@@ -195,9 +195,17 @@ reduced_data_p<-reduced_data_p %>%
 reduced_data_p$race<-reduced_data_p$race2
 reduced_data_p$race2<-NULL
 
-unique(reduced_data_p)
 
-reduced_data_p%>% select(perwt,age,agegroup,gender,education,state,household_income,race,labforce)->post_data
 
+
+reduced_data_p%>% select(perwt,age,agegroup,gender,education,state,household_income,race,labforce)->cencus_data
+# Add cells
+cencus_data$cell<-paste(cencus_data$agegroup,cencus_data$gender)
+
+# Convert variables to factors
+f.cols.census<-c("agegroup","gender","education","state","household_income" ,"race", "cell","labforce")
+cencus_data[f.cols.census] <- lapply(cencus_data[f.cols.census], factor) 
+
+unique(cencus_data)
 rm(reduced_data_p)
 

@@ -96,11 +96,16 @@ reduced_data_s<-reduced_data_s %>%
                          )) 
 reduced_data_s$employment<-NULL
 
-unique(reduced_data_s)
-
 reduced_data_s%>% select(vote_2020,age,agegroup,gender,education,state,household_income,race,labforce)->survey_data
-#### What else???? ####
 
-# Maybe check the values?
-# Is vote a binary? If not, what are you going to do?
+# Add cells
+survey_data$cell<-paste(survey_data$agegroup,survey_data$gender)
+
+# Convert variables to factors
+f.cols.survey<-c("agegroup","gender","education","state","household_income" ,"race", "cell","vote_2020","labforce")
+survey_data[f.cols.survey] <- lapply(survey_data[f.cols.survey], factor) 
+## To predict probability of voting for Trump (Biden as ref)
+survey_data$vote_2020 <- relevel(survey_data$vote_2020, ref =  "Joe Biden") 
+
+unique(survey_data)
 rm(reduced_data_s)
