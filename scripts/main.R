@@ -232,14 +232,14 @@ unique(filtered_data_survey$household_income)
 length(unique(filtered_data_survey$race_ethnicity))
 length(unique(filtered_data_census$race))
 
-otherasian<-c("Asian (Asian Indian)","Asian (Vietnamese)","Asian (Other)","Asian (Korean)","Asian (Filipino)",
+other_asian_or_pacific_islander<-c("Asian (Asian Indian)","Asian (Vietnamese)","Asian (Other)","Asian (Korean)","Asian (Filipino)",
               "Pacific Islander (Native Hawaiian)","Pacific Islander (Other)",
               "Pacific Islander (Samoan)","Pacific Islander (Guamanian)")
 #survey data
 filtered_data_survey<-filtered_data_survey %>% 
   mutate(race = case_when(race_ethnicity =="Asian (Japanese)" ~ 'Japanese',
                           race_ethnicity =="Asian (Chinese)" ~ 'Chinese',
-                          race_ethnicity %in% otherasian ~"other asian or pacific islander",
+                          race_ethnicity %in% other_asian_or_pacific_islander ~"other asian or pacific islander",
                           race_ethnicity =="White" ~ 'White',
                           race_ethnicity =="Black, or African American" ~ 'Black, or African American',
                           race_ethnicity =="Some other race" ~ 'Other race',

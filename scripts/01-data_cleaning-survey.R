@@ -1,8 +1,8 @@
 #### Preamble ####
-# Purpose: Prepare and clean the survey data downloaded from [...UPDATE ME!!!!!]
-# Author: Rohan Alexander and Sam Caetano [CHANGE THIS TO YOUR NAME!!!!]
+# Purpose: Prepare and clean the survey data downloaded from UCLA
+# Author: Boyu Cao
 # Data: 22 October 2020
-# Contact: rohan.alexander@utoronto.ca [PROBABLY CHANGE THIS ALSO!!!!]
+# Contact: boyu.cao@mail.utoronto.ca
 # License: MIT
 # Pre-requisites: 
 # - Need to have downloaded the data from X and save the folder that you're 
@@ -65,9 +65,42 @@ reduced_data_s<-reduced_data_s %>%
                               age >80 ~ 'above 80'
   )) 
 
+# Unified the columns name
+reduced_data_s$education[reduced_data_s$education=="Other post high school vocational training"]<-"High school graduate"
 
+# race
+
+other_asian_or_pacific_islander<-c("Asian (Asian Indian)","Asian (Vietnamese)","Asian (Other)","Asian (Korean)","Asian (Filipino)",
+                                   "Pacific Islander (Native Hawaiian)","Pacific Islander (Other)",
+                                   "Pacific Islander (Samoan)","Pacific Islander (Guamanian)")
+
+reduced_data_s<-reduced_data_s %>% 
+  mutate(race = case_when(race_ethnicity =="Asian (Japanese)" ~ 'Japanese',
+                          race_ethnicity =="Asian (Chinese)" ~ 'Chinese',
+                          race_ethnicity %in% other_asian_or_pacific_islander ~"other asian or pacific islander",
+                          race_ethnicity =="White" ~ 'White',
+                          race_ethnicity =="Black, or African American" ~ 'Black, or African American',
+                          race_ethnicity =="Some other race" ~ 'Other race',
+                          race_ethnicity=="American Indian or Alaska Native"~"American Indian or Alaska Native",
+                          race_ethnicity=="Other race "~"Other race"
+  )) 
+reduced_data_s$race_ethnicity<-NULL
+
+# employee
+yes<-c("Full-time employed", "Part-time employed")
+no<-c("Retired", "Student", "Self-employed", "Permanently disabled","Unemployed or temporarily on layoff","Homemaker","Other:" )
+
+reduced_data_s<-reduced_data_s %>% 
+  mutate(labforce = case_when(employment %in% yes ~"Yes",
+                              employment %in% no ~"No",
+                         )) 
+reduced_data_s$employment<-NULL
+
+unique(reduced_data_s)
+
+reduced_data_s%>% select(vote_2020,age,agegroup,gender,education,state,household_income,race,labforce)->survey_data
 #### What else???? ####
 
 # Maybe check the values?
 # Is vote a binary? If not, what are you going to do?
-
+rm(reduced_data_s)
