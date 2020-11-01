@@ -109,3 +109,6 @@ survey_data$vote_2020 <- relevel(survey_data$vote_2020, ref =  "Joe Biden")
 
 unique(survey_data)
 rm(reduced_data_s)
+
+# Output cleaned data as csv
+write_csv(survey_data, "outputs/survey-cleaned.csv")

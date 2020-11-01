@@ -1,8 +1,9 @@
-# Forecasting 2020 United States Presidential Election
+# Forecasting the 2020 United States Presidential Election
 
 ## Legend
 
 **Bold**: Variable names to change.
+
 *Italic*: Details required
 
 ## Overview

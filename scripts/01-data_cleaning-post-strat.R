@@ -209,3 +209,5 @@ cencus_data[f.cols.census] <- lapply(cencus_data[f.cols.census], factor)
 unique(cencus_data)
 rm(reduced_data_p)
 
+# Output cleaned data as csv
+write_csv(cencus_data, "outputs/post-strat-cleaned.csv")
