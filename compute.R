@@ -1,4 +1,3 @@
-####*****Multi-level regression*****####
 library(lme4)
 library(brms)
 library(tidybayes)
@@ -8,19 +7,15 @@ library(ROCR)
 
 
 ####Model 1####
-model_logit1 <- glmer(vote_2020~(1+race+agegroup|cell)+gender+education+state+household_income+labforce,
-                      data = survey_data, 
-                      family=binomial)
+model_logit1 <- readRDS("/outputs/model/model_logit.rds")
 
-# model_logit1 <- read_rds("outputs/model/model_logit1.rds")
-saveRDS(model_logit1, file = "outputs/model/model_logit.rds")
+
 summary(model_logit1)
 
 prob.1<-predict(model_logit1,type=c('response'))
 result_model1<-ifelse(prob.1>=0.5,"Donald Trump","Joe Biden")
 survey_data.result<-cbind(survey_data,result_model1)
 survey_data.result$result_model1<- as.factor(survey_data.result$result_model1)
-survey_data.result$vote_2020<- as.factor(survey_data.result$vote_2020)
 #Logistic: Confusion Matrix (optional)
 cm.1<-confusionMatrix(survey_data.result$result_model1,survey_data.result$vote_2020)[2]
 accu.1<-confusionMatrix(survey_data.result$result_model1,survey_data.result$vote_2020)[3]$overall['Accuracy']

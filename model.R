@@ -55,7 +55,7 @@ post_strat_data <- read.csv("outputs/post-strat-cleaned.csv")
 # ##############################################################################
 
 
-survey_model <- brms::brm(vote_2020 ~ age + gender + education + state + race + 
+survey_model <- brms::brm(vote_2020 ~ age_group + gender + education + state + race + 
                      house_income + labforce,
                    data = survey_data,
                    family = bernoulli(),
