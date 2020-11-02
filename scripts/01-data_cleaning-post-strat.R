@@ -94,6 +94,23 @@ reduced_data_p<-reduced_data_p %>%
 reduced_data_p<-rename(reduced_data_p,education=educd2)
 reduced_data_p$educd<-NULL
 
+## race
+reduced_data_p<-reduced_data_p %>% 
+  mutate(race2 = case_when(race=="white"~"White",
+                           race=="chinese"~"Chinese",
+                           race=="black/african american/negro"~"Black, or African American",
+                           race=="two major races"~"Other race",
+                           race=="other race, nec"~"Other race",
+                           race=="japanese"~"Japanese",
+                           race=="american indian or alaska native"~"American Indian or Alaska Native",
+                           race=="three or more major races"~"Other race",
+                           race=="other asian or pacific islander"~"other asian or pacific islander"
+  )) 
+
+reduced_data_p$race<-reduced_data_p$race2
+reduced_data_p$race2<-NULL
+
+
 ## Short the states name
 reduced_data_p<-reduced_data_p %>% 
   mutate(state = case_when(stateicp=="alabama"~"AL",
@@ -179,35 +196,18 @@ reduced_data_p<-reduced_data_p %>%
 
 reduced_data_p$inctot<-NULL
 
-## race
-reduced_data_p<-reduced_data_p %>% 
-  mutate(race2 = case_when(race=="white"~"White",
-                           race=="chinese"~"Chinese",
-                           race=="black/african american/negro"~"Black, or African American",
-                           race=="two major races"~"Other race",
-                           race=="other race, nec"~"Other race",
-                           race=="japanese"~"Japanese",
-                           race=="american indian or alaska native"~"American Indian or Alaska Native",
-                           race=="three or more major races"~"Other race",
-                           race=="other asian or pacific islander"~"other asian or pacific islander"
-  )) 
-
-reduced_data_p$race<-reduced_data_p$race2
-reduced_data_p$race2<-NULL
 
 
-
-
-reduced_data_p%>% select(perwt,age,agegroup,gender,education,state,household_income,race,labforce)->cencus_data
+reduced_data_p%>% select(perwt,age,agegroup,gender,education,state,household_income,race,labforce)->census_data
 # Add cells
-cencus_data$cell<-paste(cencus_data$agegroup,cencus_data$gender)
+census_data$cell<-paste(census_data$agegroup,census_data$gender)
 
 # Convert variables to factors
 f.cols.census<-c("agegroup","gender","education","state","household_income" ,"race", "cell","labforce")
-cencus_data[f.cols.census] <- lapply(cencus_data[f.cols.census], factor) 
+census_data[f.cols.census] <- lapply(census_data[f.cols.census], factor) 
 
-unique(cencus_data)
+unique(census_data)
 rm(reduced_data_p)
 
 # Output cleaned data as csv
-write_csv(cencus_data, "outputs/post-strat-cleaned.csv")
+write_csv(census_data, "outputs/post-strat-cleaned.csv")
