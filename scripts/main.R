@@ -27,7 +27,8 @@ model_logit1 <- glmer(vote_2020~(1+race+agegroup|cell)+gender+education+state+ho
                       data = survey_data, 
                       family=binomial)
 
-model_logit1 <- read_rds("outputs/model/model_logit1.rds")
+# model_logit1 <- read_rds("outputs/model/model_logit1.rds")
+saveRDS(model_logit1, file = "outputs/model/model_logit.rds")
 summary(model_logit1)
 
 prob.1<-predict(model_logit1,type=c('response'))

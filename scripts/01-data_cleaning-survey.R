@@ -108,7 +108,6 @@ survey_data[f.cols.survey] <- lapply(survey_data[f.cols.survey], factor)
 ## To predict probability of voting for Trump (Biden as ref)
 survey_data$vote_2020 <- relevel(survey_data$vote_2020, ref =  "Joe Biden") 
 
-unique(survey_data)
 rm(reduced_data_s)
 
 # Output cleaned data as csv
