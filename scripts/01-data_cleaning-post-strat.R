@@ -38,7 +38,8 @@ reduced_data_p <-
 # Remove people who can't vote
 reduced_data_p$age<-as.numeric(reduced_data_p$age)
 reduced_data_p<-reduced_data_p %>% filter(age>=18 & 
-                                          (citizen=="naturalized citizen"|citizen=="born abroad of american parents")
+                                          (citizen=="naturalized citizen"|citizen=="born abroad of american parents") &
+                                          (education!="3rd Grade or less" )
                                           )
 # Adjust the NA
 reduced_data_p$inctot<-ifelse(reduced_data_p$inctot==9999999,
@@ -198,7 +199,7 @@ reduced_data_p$inctot<-NULL
 
 
 
-reduced_data_p%>% select(perwt,age,agegroup,gender,education,state,household_income,race,labforce)->census_data
+reduced_data_p%>% select(perwt,agegroup,gender,education,state,household_income,race,labforce)->census_data
 # Add cells
 census_data$cell<-paste(census_data$agegroup,census_data$gender)
 
@@ -206,7 +207,6 @@ census_data$cell<-paste(census_data$agegroup,census_data$gender)
 f.cols.census<-c("agegroup","gender","education","state","household_income" ,"race", "cell","labforce")
 census_data[f.cols.census] <- lapply(census_data[f.cols.census], factor) 
 
-unique(census_data)
 rm(reduced_data_p)
 
 # Output cleaned data as csv

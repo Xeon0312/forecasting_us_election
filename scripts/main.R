@@ -5,16 +5,35 @@ library(tidybayes)
 library(caret)
 library(ROCR)
 
+
+unique(census_data$age)
+unique(census_data$agegroup)
+unique(census_data$gender)
+unique(census_data$education)
+unique(census_data$state)
+unique(census_data$household_income)
+unique(census_data$race)
+unique(census_data$labforce)
+unique(survey_data$age)
+unique(survey_data$agegroup)
+unique(survey_data$gender)
+unique(survey_data$education)
+unique(survey_data$state)
+unique(survey_data$household_income)
+unique(survey_data$race)
+unique(survey_data$labforce)
 ####Model 1####
 model_logit1 <- glmer(vote_2020~(1+race+agegroup|cell)+gender+education+state+household_income+labforce,
                       data = survey_data, 
                       family=binomial)
 
+model_logit1 <- read_rds("outputs/model/model_logit1.rds")
 summary(model_logit1)
 
 prob.1<-predict(model_logit1,type=c('response'))
-result_model1<-ifelse(prob.1>=0.5,"Joe Biden","Donald Trump")
+result_model1<-ifelse(prob.1>=0.5,"Donald Trump","Joe Biden")
 survey_data.result<-cbind(survey_data,result_model1)
+survey_data.result$result_model1<- as.factor(survey_data.result$result_model1)
 #Logistic: Confusion Matrix (optional)
 cm.1<-confusionMatrix(survey_data.result$result_model1,survey_data.result$vote_2020)[2]
 accu.1<-confusionMatrix(survey_data.result$result_model1,survey_data.result$vote_2020)[3]$overall['Accuracy']
@@ -25,33 +44,12 @@ roc.1 <- roc(survey_data.result$vote_2020, prob.1)
 auc(roc.1)
 plot(roc.1, auc.polygon=TRUE, print.auc = TRUE,asp = NA)
 
-
-####Model 2-Too slow, don’t run it, just to give you an idea what can be changed in building model#### 
-model_logit2 <- glmer(vote_2020~(1+race+state|cell)+agegroup+gender+education+household_income,
-                      data = survey_data, 
-                      family=binomial)
-
-summary(model_logit2)
-
-
-prob.2<-predict(model_logit2,type=c('response'))
-result_model2<-ifelse(prob.2>=0.5,"Joe Biden","Donald Trump")
-survey_data.result<-cbind(survey_data.result,result_model2)
-
-#Logistic: Confusion Matrix (optional)
-cm.2<-confusionMatrix(survey_data.result$result_model2,survey_data.result$vote_2020)[2]
-#Logistic: ROC Curve (optional)
-roc.2 <- roc(survey_data.result$vote_2020, prob.2)
-auc(roc.2)
-plot(roc.2, auc.polygon=TRUE, print.auc = TRUE,asp = NA)
-
-
 ####*****Post-Stratification*****####
 
 ####Apply model on census data####
 vote_2020_prob<-predict(model_logit1,census_data[,c("agegroup","gender","education","state",
-                                                    "household_income","race","cell")],type="response")
-vote_2020_pred<-ifelse(vote_2020_prob>0.5,"Joe Biden","Donald Trump")
+                                                    "household_income","race","cell","labforce")],type="response")
+vote_2020_pred<-ifelse(vote_2020_prob>0.5,"Donald Trump","Joe Biden")
 census_data.result<-cbind(census_data,vote_2020_pred)
 
 ####calculate total votes based on person weight####

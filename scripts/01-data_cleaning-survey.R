@@ -40,11 +40,12 @@ reduced_data_s$age<-as.numeric(reduced_data_s$age)
 # Remove people who didn't do the survey proply.
 reduced_data_s<-reduced_data_s %>% 
   filter(registration=="Registered"&
-        vote_intention=="Yes, I will vote"&
-        !(consider_trump=="Yes" & not_trump =="Yes")&
-        !(consider_trump=="No" & not_trump =="No")&
-         (consider_trump=="Yes" & trump_biden!="Joe Biden")&
-         (vote_2020=="Donald Trump"|vote_2020=="Joe Biden")
+        # vote_intention=="Yes, I will vote"&
+        # !(consider_trump=="Yes" & not_trump =="Yes")&
+        # !(consider_trump=="No" & not_trump =="No")&
+        #  (consider_trump=="Yes" & trump_biden!="Joe Biden")&
+         (vote_2020=="Donald Trump"|vote_2020=="Joe Biden")&
+         (age>=18)
 )
 
 # Droping NA.
@@ -67,7 +68,7 @@ reduced_data_s<-reduced_data_s %>%
 
 # Unified the columns name
 reduced_data_s$education[reduced_data_s$education=="Other post high school vocational training"]<-"High school graduate"
-
+reduced_data_s$education[reduced_data_s$education=="Completed some graduate, but no degree"]<-"College Degree (such as B.A., B.S.)"
 # race
 
 other_asian_or_pacific_islander<-c("Asian (Asian Indian)","Asian (Vietnamese)","Asian (Other)","Asian (Korean)","Asian (Filipino)",
@@ -96,7 +97,7 @@ reduced_data_s<-reduced_data_s %>%
                          )) 
 reduced_data_s$employment<-NULL
 
-reduced_data_s%>% select(vote_2020,age,agegroup,gender,education,state,household_income,race,labforce)->survey_data
+reduced_data_s%>% select(vote_2020,agegroup,gender,education,state,household_income,race,labforce)->survey_data
 
 # Add cells
 survey_data$cell<-paste(survey_data$agegroup,survey_data$gender)
