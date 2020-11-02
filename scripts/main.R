@@ -301,15 +301,15 @@ library(caret)
 library(ROCR)
 
 ####Model 1####
-model_logit1 <- glmer(vote_2020~(1+race+agegroup|cell)+gender+education+state+household_income,
-                      data = survey.data, 
+model_logit1 <- glmer(vote_2020~(1+race+agegroup|cell)+gender+education+state+household_income+labforce,
+                      data = survey_data, 
                       family=binomial)
 
 summary(model_logit1)
 
 prob.1<-predict(model_logit1,type=c('response'))
 result_model1<-ifelse(prob.1>=0.5,"Joe Biden","Donald Trump")
-survey.data.result<-cbind(survey.data,result_model1)
+survey_data.result<-cbind(survey_data,result_model1)
 #Logistic: Confusion Matrix (optional)
 cm.1<-confusionMatrix(survey.data.result$result_model1,survey.data.result$vote_2020)[2]
 accu.1<-confusionMatrix(survey.data.result$result_model1,survey.data.result$vote_2020)[3]$overall['Accuracy']
