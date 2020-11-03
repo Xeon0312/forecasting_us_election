@@ -7,39 +7,38 @@ library(ROCR)
 
 
 ####Model 1####
-model_logit <- readRDS("/outputs/model/model_logit.rds")
+model_logit <- readRDS("./outputs/model/model_logit.rds")
 
 
 summary(model_logit)
 
-prob.1<-predict(model_logit,type=c('response'))
-result_model1<-ifelse(prob.1>=0.5,"Donald Trump","Joe Biden")
-survey_data.result<-cbind(survey_data,result_model1)
-survey_data.result$result_model1<- as.factor(survey_data.result$result_model1)
+prob_trump<-predict(model_logit,type=c('response'))
+vote_trump<-ifelse(prob_trump>=0.5,"Donald Trump","Joe Biden")
+survey_data_with_pred<-cbind(survey_data,vote_trump)
+survey_data_with_pred$vote_trump<- as.factor(survey_data_with_pred$vote_trump)
+survey_data_with_pred$vote_2020<- as.factor(survey_data_with_pred$vote_2020)
 #Logistic: Confusion Matrix (optional)
-cm.1<-confusionMatrix(survey_data.result$result_model1,survey_data.result$vote_2020)[2]
-accu.1<-confusionMatrix(survey_data.result$result_model1,survey_data.result$vote_2020)[3]$overall['Accuracy']
-cm.1
-accu.1
-#Logistic: ROC Curve (optional)
-roc.1 <- roc(survey_data.result$vote_2020, prob.1)
-auc(roc.1)
-plot(roc.1, auc.polygon=TRUE, print.auc = TRUE,asp = NA)
+confusion_matrix<-confusionMatrix(survey_data_with_pred$vote_trump,survey_data_with_pred$vote_2020)[2]
+accuary<-confusionMatrix(survey_data_with_pred$vote_trump,survey_data_with_pred$vote_2020)[3]$overall['Accuracy']
+confusion_matrix
+accuary
+
 
 ####*****Post-Stratification*****####
 
 ####Apply model on census data####
-vote_2020_prob<-predict(model_logit,census_data[,c("agegroup","gender","education","state",
-                                                    "household_income","race","cell","labforce")],type="response")
+census_data_select = c("agegroup","gender","education","state",
+                       "household_income","race","cell","labforce")
+vote_2020_prob<-predict(model_logit,census_data[,census_data_select],type="response")
 vote_2020_pred<-ifelse(vote_2020_prob>0.5,"Donald Trump","Joe Biden")
-census_data.result<-cbind(census_data,vote_2020_pred)
+census_data_with_pred<-cbind(census_data,vote_2020_pred)
 
 ####calculate total votes based on person weight####
-census_data.result$trump_votes<-ifelse(census_data.result$vote_2020_pred=="Donald Trump",census_data.result$perwt,0)
-census_data.result$biden_votes<-ifelse(census_data.result$vote_2020_pred=="Joe Biden",census_data.result$perwt,0)
+census_data_with_pred$trump_votes<-ifelse(census_data_with_pred$vote_2020_pred=="Donald Trump",census_data_with_pred$perwt,0)
+census_data_with_pred$biden_votes<-ifelse(census_data_with_pred$vote_2020_pred=="Joe Biden",census_data_with_pred$perwt,0)
 
 ####Calculate vote per state####
-census_data.result %>% group_by(state) %>% summarise(Trump=sum(trump_votes),Biden=sum(biden_votes))->predicted_states
+census_data_with_pred %>% group_by(state) %>% summarise(Trump=sum(trump_votes),Biden=sum(biden_votes))->predicted_states
 predicted_states$winner<-ifelse(predicted_states$Trump>predicted_states$Biden,
                                 "Donald Trump","Joe Biden")
 
@@ -56,5 +55,5 @@ predicted_states<-predicted_states %>%
   )) 
 
 
-predicted_states %>% group_by(winner) %>% summarise(total_votes=sum(electoral_votes))->election_result
-election_result
+predicted_states %>% group_by(winner) %>% summarise(final_votes_pred=sum(electoral_votes))->election_pred
+election_pred
