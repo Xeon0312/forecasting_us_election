@@ -166,6 +166,8 @@ reduced_data_p<-reduced_data_p %>%
                            stateicp=="wyoming"~"WY",
                            stateicp=="district of columbia"~"DC")) 
 reduced_data_p$stateicp<-NULL
+# reference: https://www.50states.com/abbreviations.htm
+
 
 ## House hold income
 reduced_data_p<-reduced_data_p %>% 

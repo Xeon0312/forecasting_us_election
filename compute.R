@@ -53,6 +53,8 @@ predicted_states<-predicted_states %>%
                                      state=="RI"~4,state=="AK"~3,state=="DE"~3,state=="MT"~3,state=="ND"~3,state=="SD"~3,state=="VT"~3,
                                      state=="WY"~3,state=="DC"~3
   )) 
+# reference: https://www.britannica.com/topic/United-States-Electoral-College-Votes-by-State-1787124
+
 
 ## Get the result
 predicted_states %>% group_by(winner) %>% summarise(final_votes_pred=sum(electoral_votes))->election_pred
