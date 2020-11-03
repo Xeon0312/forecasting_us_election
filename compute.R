@@ -7,12 +7,12 @@ library(ROCR)
 
 
 ####Model 1####
-model_logit1 <- readRDS("/outputs/model/model_logit.rds")
+model_logit <- readRDS("/outputs/model/model_logit.rds")
 
 
-summary(model_logit1)
+summary(model_logit)
 
-prob.1<-predict(model_logit1,type=c('response'))
+prob.1<-predict(model_logit,type=c('response'))
 result_model1<-ifelse(prob.1>=0.5,"Donald Trump","Joe Biden")
 survey_data.result<-cbind(survey_data,result_model1)
 survey_data.result$result_model1<- as.factor(survey_data.result$result_model1)
@@ -29,7 +29,7 @@ plot(roc.1, auc.polygon=TRUE, print.auc = TRUE,asp = NA)
 ####*****Post-Stratification*****####
 
 ####Apply model on census data####
-vote_2020_prob<-predict(model_logit1,census_data[,c("agegroup","gender","education","state",
+vote_2020_prob<-predict(model_logit,census_data[,c("agegroup","gender","education","state",
                                                     "household_income","race","cell","labforce")],type="response")
 vote_2020_pred<-ifelse(vote_2020_prob>0.5,"Donald Trump","Joe Biden")
 census_data.result<-cbind(census_data,vote_2020_pred)
