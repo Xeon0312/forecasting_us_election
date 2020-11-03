@@ -40,7 +40,7 @@ vote_2020_pred<-ifelse(vote_2020_prob>0.5,"Donald Trump","Joe Biden")
 census_data.result<-cbind(census_data,vote_2020_pred)
 
 ####calculate total votes based on person weight####
-census_data.result$trump_votes<-ifelse(census_data.result$vote_2020_pred=="Donald Trump",census_data.result$perwt,0)
+census_data.rkesult$trump_votes<-ifelse(census_data.result$vote_2020_pred=="Donald Trump",census_data.result$perwt,0)
 census_data.result$biden_votes<-ifelse(census_data.result$vote_2020_pred=="Joe Biden",census_data.result$perwt,0)
 
 ####Calculate vote per state####

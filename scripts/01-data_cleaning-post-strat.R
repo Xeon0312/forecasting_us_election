@@ -211,3 +211,4 @@ rm(reduced_data_p)
 
 # Output cleaned data as csv
 write_csv(census_data, "outputs/post-strat-cleaned.csv")
+

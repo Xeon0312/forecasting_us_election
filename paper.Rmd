@@ -1,0 +1,212 @@
+---
+title: "TBD"
+subtitle: "TBD"
+author: 
+- Boyu Cao
+- Yijia Liu
+- Anan Jiang
+- Ziyue Yang
+thanks: "Code and data are available at: https://github.com/Xeon0312/forecasting_us_election"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+abstract: |
+  | First sentence. Second sentence. Third sentence. Fourth sentence. 
+  | **Keywords**: forecasting, US 2020 election, Trump, Biden, multilevel regression with post-stratification.
+output:
+  bookdown::pdf_document2:
+toc: FALSE
+bibliography: references.bib
+---
+
+```{r setup, include=FALSE}
+# Setting seed as the last 4 digits of Ziyue Yang's student number
+set.seed(4759)
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(kableExtra)
+# library(palmerpenguins)
+# source('scripts/01-data_cleaning-post-strat.R')
+# source('scripts/01-data-cleaning-survey.R')
+# source('scripts/main.R')
+```
+
+# Introduction
+
+The 59^th^ annual presidential election in the United States is scheduled to be held on Tuesday, November 3, 2020. Voters will elect the presidential elector, who will vote on December 14, 2020 to elect the new president and vice president or the current presidents Donald Trump and Mike Pence respectively (Desilver, 2020). Trump was nominated by the Republican Party, and Former Vice President Joe Biden won the Democratic nomination in a fiercely competitive primary (@citeSavvy). This U.S. election is the most polarized one and the world pays attention to it.
+The main goal of this report is to use multilevel regression with post-stratification (MRP) to predict the overall popular vote in the 2020 U.S. presidential election. MRP has become a widely used technique for estimations in national opinion polls, it is a statistical technique used to correct model estimation in estimating the known difference between the sample population (respondents in the survey) and the target population (American citizens who will vote in the election).
+We used two surveys in our report, one is from the Democracy Fund + UCLA Nationscape. This survey interviewed 500,000 Americans from July 2019 to December 2020, and its data covers the 2020 campaigns and elections (@citeNationscape). The other is from the American Community Surveys (ACS), which is the premier source for detailed population and housing information about the United States (@citeIPUMS), we used this as a post-stratification data. We will extend this in the Data section. After cleaning the two datas based on variables we selected, we built a post- stratification multi-level regression model to explain the vote intention based on the variables. Details will be in the Model section. 
+We expected that Biden would win XX% of the overall popular vote in XX% confidence interval. Our findings are essential because the election forecast has attracted the basic impulse of humans to peek into the future. People can't restrain their curiosity and will want to find out a way to get a certain answer before the result is released. Our finding is a proper answer for the audience with some degree of confidence. However, limitations exist too, for example, the sample size of the survey data is too small. More information will be in the Discussion section. Hopefully, they can rely on this report to foretell the 2020 U.S. election. 
+
+
+
+
+
+# Data
+
+The following tables are generated based on our data sets, illustrated with package `kableExtra` (**KABLEEXTRA**)
+
+```{r}
+head(census_data) %>%
+  kbl(caption = "Table 2.") %>%
+  kable_classic( html_font = "Cambria")
+```
+
+<!-- Our data is of penguins (Figure \@ref(fig:bills)). -->
+
+
+## Survey - Trump
+
+```{r}
+survey_trump <- survey_data %>% filter(vote_2020 == "Donald Trump")
+```
+
+```{r trumpRaceGender, fig.width = 6}
+ggplot(survey_trump, aes(x = race)) + geom_bar() + labs(title = "Figure 1. Race Distribution of People Voted for Donald Trump")
+```
+
+```{r}
+ggplot(survey_trump, aes(x = gender)) + geom_bar() + labs(title = "Figure 2. Gender Distribution of People Voted for Donald Trump")
+```
+
+```{r, echo = TRUE}
+ggplot(survey_trump, aes(x = agegroup)) + geom_bar() + labs(title = "Figure 3. Age Distribution of People Voted for Donald Trump")
+```
+
+```{r, fig.width = 8}
+ggplot(survey_trump, aes(x = education)) + geom_bar() + labs(title = "Figure 4. Education Level Distribution of People Voted for Donald Trump")
+```
+
+```{r, fig.width = 12}
+ggplot(survey_trump, aes(x = household_income)) + geom_bar() + labs(title = "Figure 5. Income Distribution of People Voted for Donald Trump")
+```
+
+```{r}
+ggplot(survey_trump, aes(x = labforce)) + geom_bar() + labs(title = "Figure 6. Labour Force Distribution of People Voted for Donald Trump")
+```
+
+```{r, fig.width = 12}
+ggplot(survey_data, aes(x = state, fill = vote_2020)) + geom_bar() + labs(title = "Figure 7. State Distribution of Voters")
+```
+
+## Survey - Biden
+
+```{r}
+survey_biden <- survey_data %>% filter(vote_2020 == "Joe Biden")
+```
+
+```{r, fig.width = 6}
+ggplot(survey_biden, aes(x = race)) + geom_bar() + labs(title = "Figure 8. Race Distribution of People Voted for Joe Biden")
+```
+
+```{r, echo = TRUE}
+ggplot(survey_biden, aes(x = agegroup)) + geom_bar() + labs(title = "Figure 9. Age Distribution of People Voted for Joe Biden")
+```
+
+```{r, fig.width = 8}
+ggplot(survey_biden, aes(x = education)) + geom_bar() + labs(title = "Figure 10. Education Distribution of People Voted for Joe Biden")
+```
+
+```{r, fig.width = 12}
+ggplot(survey_biden, aes(x = household_income)) + geom_bar() + labs(title = "Figure 1. Race Distribution of People Voted for Joe Biden")
+```
+
+```{r}
+ggplot(survey_biden, aes(x = labforce)) + geom_bar() + labs(title = "Figure 1. Labour Force Distribution of People Voted for Joe Biden")
+```
+
+```{r, fig.width = 12}
+ggplot(survey_biden, aes(x = state)) + geom_bar()
+```
+
+---
+
+```{r bills, fig.cap="Distribution of Gender", echo = FALSE}
+ggplot(census_data, aes(x = gender)) + geom_bar()
+```
+
+```{r , fig.cap="Distribution of Degrees", echo = TRUE, fig.width = 10}
+ggplot(survey_data %>% filter(vote_2020 == "Donald Trump"), aes(x = education)) + geom_bar()
+```
+
+```{r , fig.cap="Distribution of Trump Voters' Education Level", echo = TRUE, fig.width = 12}
+ggplot(survey_data %>% filter(vote_2020 == "Donald Trump"), aes(x = education)) + geom_bar()
+```
+
+```{r , ficap="Distribution of Age", echo = TRUE, fig.width = 8}
+ggplot(census_data, aes(x = agegroup)) + geom_bar()
+```
+
+```{r , ficap="Distribution of Age", echo = TRUE, fig.width = 8}
+ggplot(census_data, aes(x = agegroup)) + geom_bar()
+```
+
+
+
+
+Talk more about it.
+s
+Also bills and their average (Figure \@ref(fig:billssssss)). (Notice how you can change the height and width so they don't take the whole page?)
+
+```{r billssssss, fig.cap="More bills of penguins", echo = FALSE, fig.width=8, fig.height=4}
+
+
+```
+
+Talk way more about it. 
+
+
+
+# Model
+
+\begin{equation}
+\text{logit}^{-1}\left(\mathbb{P}(Y_i = \textbf{Biden})\right) = \alpha_j + \
+\end{equation}
+
+Equation \@ref(eq:bayes) seems useful, eh?
+
+Here's a dumb example of how to use some references: In paper we run our analysis in `R` [@citeR]. We also use the `tidyverse` which was written by @thereferencecanbewhatever If we were interested in baseball data then @citeLahman could be useful. 
+
+# Results
+
+```{r results, echo = FALSE}
+cm.1 %>%
+  kbl(caption = "Table 3. Predictions") %>%
+  kable_classic( html_font = "Cambria")
+
+accu.1 %>% 
+  kbl(caption = "Table 3.") %>%
+  kable_classic( html_font = "Cambria")
+```
+
+```{r stateDist, fig.cap="Distribution of Trump Votes, by States", echo = TRUE, fig.width=12}
+ggplot(predicted_states %>% filter(Trump >= Biden), aes(x = reorder(state, -Trump), y = Trump)) + geom_bar(stat = 'identity')
+```
+
+<!-- ```{r stateDist, fig.cap="Distribution of Trump Votes, by States", echo = TRUE, fig.width=12} -->
+<!-- ggplot(predicted_states %>% filter(Biden >= Trump), aes(x = reorder(state, -), y = Trump)) + geom_bar(stat = 'identity') -->
+<!-- ``` -->
+
+# Discussion
+
+## First discussion point
+
+If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
+
+## Second discussion point
+
+## Third discussion point
+
+## Weaknesses and next steps
+
+Weaknesses and next steps should also be included.
+
+\newpage
+
+# Appendix {-}
+
+\newpage
+
+
+# References
+
+
