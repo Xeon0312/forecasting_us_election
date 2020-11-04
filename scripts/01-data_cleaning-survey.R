@@ -15,7 +15,7 @@ library(haven)
 library(tidyverse)
 
 # Read in the raw data (You might need to change this if you use a different dataset)
-raw_data_s <- read_dta("inputs/data/ns20200625/ns20200625.dta")
+raw_data_s <- read_dta("../../inputs/data/ns20200625/ns20200625.dta")
 # Add the labels
 raw_data_s <- labelled::to_factor(raw_data_s)
 # Just keep some variables
@@ -110,6 +110,3 @@ survey_data[f.cols.survey] <- lapply(survey_data[f.cols.survey], factor)
 survey_data$vote_2020 <- relevel(survey_data$vote_2020, ref =  "Joe Biden") 
 
 rm(reduced_data_s)
-
-# Output cleaned data as csv
-write_csv(survey_data, "outputs/survey-cleaned.csv")

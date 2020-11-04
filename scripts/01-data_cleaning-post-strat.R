@@ -13,7 +13,7 @@
 library(haven)
 library(tidyverse)
 # Read in the raw data. 
-raw_data <- read_dta("inputs/data/usa_00001.dta"
+raw_data <- read_dta("../../inputs/data/usa_00001.dta"
                      )
 # Add the labels
 raw_data <- labelled::to_factor(raw_data)
@@ -209,6 +209,3 @@ f.cols.census<-c("agegroup","gender","education","state","household_income" ,"ra
 census_data[f.cols.census] <- lapply(census_data[f.cols.census], factor) 
 
 rm(reduced_data_p)
-
-# Output cleaned data as csv
-write_csv(census_data, "outputs/post-strat-cleaned.csv")

@@ -8,7 +8,7 @@
 
 ## Overview
 
-This repository contains code and data for forecasting the United States 2020 Presidential election. It was created by **NAME**. The purpose of this project is to summarize the results based on the statistical models we built.
+This repository contains code and data for forecasting the United States 2020 Presidential election. It was created by Boyu Cao & Ziyue Yang. The purpose of this project is to summarize the results based on the statistical models we built.
 
 Note that data sets are not included, since the public distribution of those data sets are prohibited; nonetheless, we provided the details below on how to get those data on your own.
 
@@ -21,11 +21,15 @@ Inputs contain data that are unchanged from their original. We use two datasets:
 
 Outputs contain data that are modified from the input data, the report and supporting material.
 
-- **X**, 
-- **Y**
+- *model*
+- *paper*
+  - `paper.pdf`
+  - `paper.rmd`
+  - `reference.bib`
 
 Scripts contain R scripts that take inputs and outputs to reproduce the results:
 
 - `01_data_cleaning.R`
 - `02_data_preparation.R`
-
+- `build_model.R`
+- `compute.R`

@@ -21,6 +21,7 @@ bibliography: references.bib
 knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 library(kableExtra)
+source('../../scripts/compute.R')
 ```
 
 # Introduction
@@ -80,39 +81,17 @@ The method we use is equivalent to using probability to get the voting result of
 
 # Results
 
-```{r results, fig.cap = "Table 4",echo = FALSE}
-tbl <- data.frame(
-  Vote = c("Joe Biden",
-  "Donald Trump"),
-  Reference = c(1339, 589),
-  Prediction = c(844, 1473)
-)
-
-kbl(tbl) %>%
-  kable_paper(full_width = F) %>%
-  column_spec(1, bold = T, border_right = T) %>%
-  column_spec(2,)
-```
-
-```{r}
-source('compute.R')
+```{r accuary, caption = "The confusion matrix",echo = FALSE}
 confusion_matrix
 ```
 
-```{r}
-tbl2 <- data.frame(
-  Vote = c("Joe Biden",
-  "Donald Trump"),
-  Win = c(298, 240)
-)
+From the result we can see that the true positive rate for Biden is 0.66.
 
-kbl(tbl2) %>%
-  kable_paper(full_width = F) %>%
-  column_spec(1, bold = T, border_right = T) %>%
-  column_spec(2,)
+```{r results, caption = "The predict vote result",echo = FALSE}
+election_pred
 ```
 
-From the result we can see that the true postive rate for biden is 0.66 and the vote he gained is 298 over 538.
+The vote he gained is 298 over 538.
 
 # Discussion
 

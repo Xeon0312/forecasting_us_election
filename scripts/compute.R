@@ -7,9 +7,9 @@ library(ROCR)
 
 
 # import model
-model_logit <- readRDS("./outputs/model/model_logit.rds")
-source('./scripts/01-data_cleaning-post-strat.R')
-source('./scripts/01-data_cleaning-survey.R')
+model_logit <- readRDS("../../outputs/model/model_logit.rds")
+source('../../scripts/01-data_cleaning-post-strat.R')
+source('../../scripts/01-data_cleaning-survey.R')
 
 # Adjust our dataset to compute
 prob_trump<-predict(model_logit,type=c('response'))
