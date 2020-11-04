@@ -13,6 +13,7 @@
 #### Workspace setup ####
 library(haven)
 library(tidyverse)
+
 # Read in the raw data (You might need to change this if you use a different dataset)
 raw_data_s <- read_dta("inputs/data/ns20200625/ns20200625.dta")
 # Add the labels
@@ -48,7 +49,7 @@ reduced_data_s<-reduced_data_s %>%
          (age>=18)
 )
 
-# Droping NA.
+# Dropping NA.
 reduced_data_s<-na.omit(reduced_data_s)
 
 # Clean memory
